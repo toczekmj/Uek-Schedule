@@ -1,0 +1,6 @@
+@CommunicationProxy_HostAddress = http://localhost:5202
+
+GET {{CommunicationProxy_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

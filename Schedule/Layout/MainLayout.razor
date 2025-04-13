@@ -1,0 +1,17 @@
+﻿@inherits LayoutComponentBase
+<MudThemeProvider/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar Color="Color.Dark">
+        My Application
+    </MudAppBar>
+    <MudDrawer Open="true" Color="Color.Dark" Anchor="Anchor.Left">
+        s
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
