@@ -1,4 +1,4 @@
-﻿namespace Shared.Proxy_DataScrapper.Enums;
+﻿namespace Shared.Enums;
 
 /// <summary>
 /// We use an ApiEndpoint enum to ensure that we have a consistent set of API endpoints

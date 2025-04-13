@@ -1,7 +1,7 @@
 ﻿using Shared.Enums;
 using Shared.Exceptions;
 
-namespace Shared.Proxy_DataScrapper;
+namespace Shared;
 
 public static class EndpointValidation
 {

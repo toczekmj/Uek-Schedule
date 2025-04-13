@@ -1,6 +1,7 @@
-﻿namespace DataScrapper;
+﻿using System.Web;
+using Shared.All_projects.Urls;
+using Shared.Proxy_DataScrapper;
+using Shared.Proxy_DataScrapper.Enums;
 
-public class RequestHandler
-{
-    
-}
+namespace DataScrapper;
+

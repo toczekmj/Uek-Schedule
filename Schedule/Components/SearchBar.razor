@@ -1,5 +1,23 @@
-﻿<h3>SearchBar</h3>
+﻿<MudTextField T="string"
+              Value="@Value"
+              ValueChanged="OnValueChanged"  
+              Placeholder="@Placeholder" 
+              Adornment="Adornment.Start"
+              AdornmentIcon="@Icon" 
+              DebounceInterval="10" 
+              Class="my-4 px-2" 
+              AutoFocus="@AutoFocus"/>
 
 @code {
-    
+    [Parameter] public string Value { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public string Placeholder { get; set; } = "Search...";
+    [Parameter] public string Icon { get; set; } = Icons.Material.Filled.Search;
+    [Parameter] public bool AutoFocus { get; set; } = true;
+
+    private async Task OnValueChanged(string newValue)
+    {
+        Value = newValue;
+        await ValueChanged.InvokeAsync(newValue);
+    }
 }

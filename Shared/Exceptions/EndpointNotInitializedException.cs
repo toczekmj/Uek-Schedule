@@ -1,4 +1,4 @@
-﻿namespace Shared.Proxy_DataScrapper.Exceptions;
+﻿namespace Shared.Exceptions;
 
 public class EndpointNotInitializedException : Exception
 {

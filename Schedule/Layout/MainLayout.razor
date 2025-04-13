@@ -1,17 +1,48 @@
 ﻿@inherits LayoutComponentBase
-<MudThemeProvider/>
+@implements IDisposable
+
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" @ref="_themeProvider"/>
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
 <MudLayout>
-    <MudAppBar Color="Color.Dark">
-        My Application
+    <MudAppBar Color="Color.Primary">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Dark" ButtonType="ButtonType.Button" OnClick="ToggleDrawer"></MudIconButton>
+        <MudSpacer/>
+        <MudSwitch @bind-Value="_isDarkMode" Color="Color.Dark" Class="ma-4" T="bool" Label="Dark Mode"></MudSwitch>
     </MudAppBar>
-    <MudDrawer Open="true" Color="Color.Dark" Anchor="Anchor.Left">
-        s
+    
+    <MudDrawer Open="_isDrawerOpen" Color="Color.Dark" Anchor="Anchor.Start" Variant="DrawerVariant.Persistent">
+        <MudPaper Elevation="0" Class="py-3" Height="100%">
+            <MudNavMenu Bordered="true">
+                <MudText Typo="Typo.h5" Align="Align.Center">Uek Schedule</MudText>
+                <MudText Typo="Typo.body2" Align="Align.Center">By toczekmj</MudText>
+                <MudNavLink Icon="@Icons.Material.Filled.Home" Href="/">Home Page</MudNavLink>
+                <MudNavLink Href="/SamplePage">Sample Page</MudNavLink>
+            </MudNavMenu>
+        </MudPaper>
     </MudDrawer>
+    
     <MudMainContent>
         @Body
     </MudMainContent>
 </MudLayout>
+
+
+@code {
+    private MudThemeProvider _themeProvider = new();
+    private bool _isDarkMode = true;
+    private bool _isDrawerOpen = true;
+
+    private void ToggleDrawer()
+    {
+        _isDrawerOpen = !_isDrawerOpen;
+        StateHasChanged();    
+    }
+
+    public void Dispose()
+    {
+        _themeProvider.Dispose();
+    }
+}
