@@ -5,7 +5,12 @@ using Shared.Urls;
 
 namespace Schedule.Application.Internals.Requests;
 
-internal class RequestHandler
+internal interface IRequestHandler
+{
+    Task<string?> GetPageContent(string targetUrl);
+}
+
+internal class RequestHandler : IRequestHandler
 {
     // We use an ApiEndpoint enum to ensure that we have a consistent set of API endpoints
     // and to avoid hardcoding strings throughout the code.
@@ -21,7 +26,7 @@ internal class RequestHandler
         _apiUrls.ValidateEndpointsDictionary();
     }
 
-    internal async Task<string?> GetPageContent(string targetUrl)
+    public async Task<string?> GetPageContent(string targetUrl)
     {
         using var httpClient = new HttpClient();
         
@@ -33,7 +38,6 @@ internal class RequestHandler
         var content = await response.Content.ReadAsStringAsync();
         return content;
     }
-
     private Uri UrlHelper(ApiEndpoint endpoint, string parameterName, string parameterValue)
     {
         var builder = new UriBuilder(_apiUrls[endpoint]);

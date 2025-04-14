@@ -1,7 +1,7 @@
 ﻿namespace Schedule.Domain;
 
-public class Group
+public class Group : GroupData
 {
-    public required string Name { get; set; }
-    public required Uri Uri { get; set; }
+    public bool Expanded { get; set; }
+    public ICollection<GroupData>? Children { get; set; }
 }

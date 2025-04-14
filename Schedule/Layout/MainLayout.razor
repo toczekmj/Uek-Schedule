@@ -1,18 +1,20 @@
 ﻿@inherits LayoutComponentBase
 @implements IDisposable
+@inject NavigationManager navigationManager
 
 <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" @ref="_themeProvider"/>
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
-<MudLayout>
+<MudLayout Class="overflow-hidden">
     <MudAppBar Color="Color.Primary">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Dark" ButtonType="ButtonType.Button" OnClick="ToggleDrawer"></MudIconButton>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Dark" ButtonType="ButtonType.Button"
+                       OnClick="ToggleDrawer"></MudIconButton>
         <MudSpacer/>
         <MudSwitch @bind-Value="_isDarkMode" Color="Color.Dark" Class="ma-4" T="bool" Label="Dark Mode"></MudSwitch>
     </MudAppBar>
-    
+
     <MudDrawer Open="_isDrawerOpen" Color="Color.Dark" Anchor="Anchor.Start" Variant="DrawerVariant.Persistent">
         <MudPaper Elevation="0" Class="py-3" Height="100%">
             <MudNavMenu Bordered="true">
@@ -23,7 +25,7 @@
             </MudNavMenu>
         </MudPaper>
     </MudDrawer>
-    
+
     <MudMainContent>
         @Body
     </MudMainContent>
@@ -38,11 +40,12 @@
     private void ToggleDrawer()
     {
         _isDrawerOpen = !_isDrawerOpen;
-        StateHasChanged();    
+        StateHasChanged();
     }
 
     public void Dispose()
     {
         _themeProvider.Dispose();
     }
+
 }

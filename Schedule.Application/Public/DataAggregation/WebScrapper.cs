@@ -5,28 +5,41 @@ using Shared.Urls;
 
 namespace Schedule.Application.Public.DataAggregation;
 
-public static class WebScrapper
+public interface IWebScrapper
 {
-    private static readonly RequestHandler RequestHandler = new();
-    
-    public static async Task<string?> GetMainPageContent()
+    Task<ICollection<GroupData>> GetMainPageData();
+    Task<ICollection<GroupData>> GetGroups(Group group);
+}
+
+public class WebScrapper : IWebScrapper
+{
+    private readonly IRequestHandler _requestHandler = new RequestHandler();
+
+    public async Task<ICollection<GroupData>> GetMainPageData()
     {
-        return await RequestHandler.GetPageContent(Links.MainPageUrl);
+        var response = await _requestHandler.GetPageContent(Links.MainPageUrl);
+        return ExtractGroupsFromSource(response);
     }
 
-    public static ICollection<Group> ExtractGroupsFromSource(string content)
+    public async Task<ICollection<GroupData>> GetGroups(Group group)
+    {
+        var response = await _requestHandler.GetPageContent(group.Uri.ToString());
+        return ExtractGroupsFromSource(response, "/html/body/div[3]/div[1]/a");
+    }
+    
+    private static List<GroupData> ExtractGroupsFromSource(string content, string? xpath = null)
     {
         var document = new HtmlDocument();
         document.LoadHtml(content);
-        var groupDiv = document.DocumentNode.SelectNodes("/html/body/div[5]/a");
+        var groupDiv = document.DocumentNode.SelectNodes(xpath ?? "/html/body/div[5]/a");
 
-        List<Group> groups = [];
+        List<GroupData> groups = [];
         foreach (var htmlNode in groupDiv)
         {
             var url = htmlNode.Attributes["href"];
             url.Value = url.Value.Replace("amp;", string.Empty);
             var name = htmlNode.InnerHtml;
-            groups.Add(new Group
+            groups.Add(new GroupData
             {
                 Name = name, Uri = new Uri(string.Concat(Links.MainPageUrl, url.Value.AsSpan(2, url.Value.Length-4)))
             });

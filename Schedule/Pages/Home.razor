@@ -2,44 +2,27 @@
 @using Schedule.Application.Public.Wrappers
 @using Schedule.Components
 @using Schedule.Domain
-@inject ISnackbar Snackbar
-@inject IJSRuntime JsRuntime
+@inject SnackbarWrappers SnackbarWrapper
 
 <SearchBar Icon="@Icons.Material.Filled.Search" Placeholder="Search..." AutoFocus="true" @bind-Value="_searchTerm"/>
 
-
 <MudGrid>
-    @foreach (var groupNode in _groups.Where(g => string.IsNullOrWhiteSpace(_searchTerm) || g.Name.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase)))
+    @if (!_dataLoaded)
     {
-        <MudItem xs="12" sm="6" md="4" lg="3" xl="3" xxl="2">
-            <MudCard Outlined="true" Class=" align-center justify-center mud-width-full py-8 ma-3">
-                <MudCardContent>
-                    <MudText>@groupNode.Name</MudText>
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => OpenGroupPage(groupNode)">
-                        Open
-                    </MudButton>
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
+        for (var i = 0; i < 20; i++)
+        {
+            <GroupCardSkeleton/>
+        }
+    }
+    else
+    {
+        @foreach (var groupNode in _groups.Where(g => string.IsNullOrWhiteSpace(_searchTerm) || g.Name.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase)))
+        {
+            <GroupCard Group="groupNode"/>
+        }   
     }
 </MudGrid>
 
-@code {
-
-    protected override async Task<Task> OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await Snackbar.WrapOnErrorAsync(LoadMainPageContent);
-        }
-
-        return base.OnAfterRenderAsync(firstRender);
-    }
-
-    private void OpenGroupPage(Group group)
-    {
-        JsRuntime.InvokeVoidAsync("openInNewTab", group.Uri);
-    } 
-}
+<MudFab Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Dark" Label="Refresh"
+        ButtonType="ButtonType.Button" Class="fixed z-10" Style="bottom: 12px; right: 0;"
+        OnClick="() => SnackbarWrapper.WrapOnErrorAsync(LoadMainPageContent)"/>

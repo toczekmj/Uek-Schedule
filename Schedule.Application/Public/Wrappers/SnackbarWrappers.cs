@@ -1,10 +1,20 @@
-﻿using MudBlazor;
+﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace Schedule.Application.Public.Wrappers;
 
-public static class SnackbarWrappers
+public class SnackbarWrappers
 {
-    public static async Task<T?> WrapOnErrorAsync<T>(this ISnackbar snackbar, Func<Task<T>> request) 
+    private readonly NavigationManager _navigationManager;
+    private readonly ISnackbar _snackbar;
+
+    public SnackbarWrappers(NavigationManager navigationManager, ISnackbar snackbar)
+    {
+        _navigationManager = navigationManager;
+        _snackbar = snackbar;
+    }
+    
+    public async Task<T?> WrapOnErrorAsync<T>(Func<Task<T>> request) 
     {
         T result;
         try
@@ -13,14 +23,14 @@ public static class SnackbarWrappers
         }
         catch (Exception e)
         {
-            snackbar.Add($"The request failed: {e.InnerException?.Message}. {e.Message}", Severity.Error);
+            ShowError(e);
             return default;
         }
-        snackbar.Add($"The request was successful", Severity.Success);
+        _snackbar.Add($"The request was successful", Severity.Success);
         return result;
     }
     
-    public static async Task WrapOnErrorAsync(this ISnackbar snackbar, Func<Task> request) 
+    public async Task WrapOnErrorAsync(Func<Task> request) 
     {
         try
         {
@@ -28,12 +38,12 @@ public static class SnackbarWrappers
         }
         catch (Exception e)
         {
-            snackbar.Add($"The request failed: {e.InnerException?.Message}. {e.Message}", Severity.Error);
+            ShowError(e);
         }
-        snackbar.Add("The request was successful", Severity.Success);
+        _snackbar.Add("The request was successful", Severity.Success);
     }
 
-    public static T? WrapOnError<T>(this ISnackbar snackbar, Func<T> request)
+    public T? WrapOnError<T>(Func<T> request)
     {
         T result;
         try
@@ -42,10 +52,26 @@ public static class SnackbarWrappers
         }
         catch (Exception e)
         {
-            snackbar.Add($"The request failed: {e.InnerException?.Message}. {e.Message}", Severity.Error);
+            ShowError(e);
             return default;
         }
-        snackbar.Add("The request was successful", Severity.Success);
+        _snackbar.Add("The request was successful", Severity.Success);
         return result;
+    }
+    
+    private void ShowError(Exception e)
+    {
+        _snackbar.Add($"The request failed: {e.InnerException?.Message}. {e.Message}", Severity.Error, config =>
+        {
+            config.Action = "Refresh";
+            config.ActionColor = Color.Primary;
+            config.OnClick = snack =>
+            {
+                _navigationManager.Refresh();
+                return Task.CompletedTask;
+            };
+            config.RequireInteraction = true;
+            config.ShowCloseIcon = false;
+        });
     }
 }
