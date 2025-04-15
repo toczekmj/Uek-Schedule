@@ -6,38 +6,9 @@ namespace CommunicationProxy.Endpoints;
 public sealed class Get
 {
     private readonly WebApplication _app;
-    private readonly ILogger _logger;
     private readonly Dictionary<ApiEndpoint, Func<HttpContext, CancellationToken, Task<IResult>>> _endpoints = new();
-    
-    #region init stuff
-    private Get(WebApplication app, ILoggerFactory loggerFactory)
-    {
-        _app = app;
-        _logger = loggerFactory.CreateLogger<Get>();
-    }
+    private readonly ILogger _logger;
 
-    public static Get Initialize(WebApplication application, ILoggerFactory loggerFactory)
-    {
-        return new Get(application, loggerFactory);
-    }
-
-    public void Configure()
-    {
-        _endpoints.Add(ApiEndpoint.GetPageContent, GetPageContent);
-        
-        _endpoints.ValidateEndpointsDictionary();
-        MapEndpoints();
-    }
-
-    private void MapEndpoints()
-    {
-        foreach ((var key, Func<HttpContext, CancellationToken, Task<IResult>>? handler) in _endpoints)
-        {
-            var url = key.ToString();
-            _app.MapGet(url, handler).WithName(key.ToString());
-        }
-    }
-    #endregion
     private async Task<IResult> GetPageContent(HttpContext httpContext, CancellationToken ct = default)
     {
         using var httpClient = new HttpClient();
@@ -63,4 +34,36 @@ public sealed class Get
 
         return Results.Ok(htmlContent);
     }
+
+    #region init stuff
+
+    private Get(WebApplication app, ILoggerFactory loggerFactory)
+    {
+        _app = app;
+        _logger = loggerFactory.CreateLogger<Get>();
+    }
+
+    public static Get Initialize(WebApplication application, ILoggerFactory loggerFactory)
+    {
+        return new Get(application, loggerFactory);
+    }
+
+    public void Configure()
+    {
+        _endpoints.Add(ApiEndpoint.GetPageContent, GetPageContent);
+
+        _endpoints.ValidateEndpointsDictionary();
+        MapEndpoints();
+    }
+
+    private void MapEndpoints()
+    {
+        foreach ((var key, Func<HttpContext, CancellationToken, Task<IResult>>? handler) in _endpoints)
+        {
+            var url = key.ToString();
+            _app.MapGet(url, handler).WithName(key.ToString());
+        }
+    }
+
+    #endregion
 }

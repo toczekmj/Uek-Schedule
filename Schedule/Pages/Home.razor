@@ -16,13 +16,38 @@
     }
     else
     {
-        @foreach (var groupNode in _groups.Where(g => string.IsNullOrWhiteSpace(_searchTerm) || g.Name.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase)))
+        ICollection<GroupDisplayObject> groups = GetGroups().ToList();
+
+        if (groups.Count == 0)
         {
-            <GroupCard Group="groupNode"/>
-        }   
+            <GroupCardSkeleton/>
+        }
+        else
+        {
+            @foreach (var groupNode in groups)
+            {
+                <GroupCard Group="groupNode" OnFavoriteChange="@StateHasChanged"/>
+            }
+        }
     }
 </MudGrid>
 
 <MudFab Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Dark" Label="Refresh"
         ButtonType="ButtonType.Button" Class="fixed z-10" Style="bottom: 12px; right: 0;"
         OnClick="() => SnackbarWrapper.WrapOnErrorAsync(LoadMainPageContent)"/>
+
+
+@code {
+
+    private IEnumerable<GroupDisplayObject> GetGroups()
+    {
+        IEnumerable<GroupDisplayObject> groups = _groups.Where(
+            g =>
+                string.IsNullOrWhiteSpace(_searchTerm)
+                || g.Name.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase)
+        );
+
+        return groups.OrderByDescending(g => g.Favourite).ThenBy(g => g.Name);
+    }
+
+}

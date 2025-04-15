@@ -7,33 +7,27 @@ namespace Schedule.Pages;
 
 public partial class Home : ComponentBase
 {
+    private bool _dataLoaded;
+
+    private List<GroupDisplayObject> _groups = [];
+    private string _searchTerm = string.Empty;
     [Inject] public IJSRuntime? JsRuntime { get; set; }
     [Inject] public IWebScrapper? WebScrapper { get; set; }
-    
-    private List<Group> _groups = [];
-    private string _searchTerm = string.Empty;
-    private bool _dataLoaded = false;
-    
+
     protected override async Task<Task> OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-            await SnackbarWrapper.WrapOnErrorAsync(LoadMainPageContent);
-        }
+        if (firstRender) await SnackbarWrapper.WrapOnErrorAsync(LoadMainPageContent);
 
         return base.OnAfterRenderAsync(firstRender);
     }
-    
+
     private async Task LoadMainPageContent()
     {
         _dataLoaded = false;
         _searchTerm = string.Empty;
-        var data =  await WebScrapper!.GetMainPageData();
+        ICollection<GroupData> data = await WebScrapper!.GetMainPageData();
         _groups = data.AsDisplayObject();
         _dataLoaded = true;
         StateHasChanged();
     }
-    
-    
-
 }

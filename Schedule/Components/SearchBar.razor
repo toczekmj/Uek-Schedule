@@ -1,11 +1,14 @@
 ﻿<MudTextField T="string"
               Value="@Value"
-              ValueChanged="OnValueChanged"  
-              Placeholder="@Placeholder" 
+              Variant="Variant.Outlined"
+              ValueChanged="OnValueChanged"
+              Placeholder="@Placeholder"
               Adornment="Adornment.Start"
-              AdornmentIcon="@Icon" 
-              DebounceInterval="10" 
-              Class="my-4 px-2" 
+              AdornmentIcon="@Icon"
+              DebounceInterval="10"
+              Class="my-4 px-2"
+              Clearable="true"
+              Immediate="true"
               AutoFocus="@AutoFocus"/>
 
 @code {
@@ -20,4 +23,5 @@
         Value = newValue;
         await ValueChanged.InvokeAsync(newValue);
     }
+
 }

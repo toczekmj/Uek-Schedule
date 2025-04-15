@@ -21,14 +21,14 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
-    
+
     options.AddPolicy("AllowLocalhostRun", policy =>
     {
         policy.WithOrigins(Links.BlazorHttpUrl)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
-    
+
     options.AddPolicy("AllowAnyOrigin", policy =>
     {
         policy.AllowAnyOrigin()

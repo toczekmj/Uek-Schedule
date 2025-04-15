@@ -13,8 +13,8 @@ public class SnackbarWrappers
         _navigationManager = navigationManager;
         _snackbar = snackbar;
     }
-    
-    public async Task<T?> WrapOnErrorAsync<T>(Func<Task<T>> request) 
+
+    public async Task<T?> WrapOnErrorAsync<T>(Func<Task<T>> request)
     {
         T result;
         try
@@ -26,11 +26,12 @@ public class SnackbarWrappers
             ShowError(e);
             return default;
         }
-        _snackbar.Add($"The request was successful", Severity.Success);
+
+        _snackbar.Add("The request was successful", Severity.Success);
         return result;
     }
-    
-    public async Task WrapOnErrorAsync(Func<Task> request) 
+
+    public async Task WrapOnErrorAsync(Func<Task> request)
     {
         try
         {
@@ -40,6 +41,7 @@ public class SnackbarWrappers
         {
             ShowError(e);
         }
+
         _snackbar.Add("The request was successful", Severity.Success);
     }
 
@@ -55,10 +57,11 @@ public class SnackbarWrappers
             ShowError(e);
             return default;
         }
+
         _snackbar.Add("The request was successful", Severity.Success);
         return result;
     }
-    
+
     private void ShowError(Exception e)
     {
         _snackbar.Add($"The request failed: {e.InnerException?.Message}. {e.Message}", Severity.Error, config =>

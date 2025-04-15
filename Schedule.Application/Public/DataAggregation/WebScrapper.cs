@@ -8,7 +8,7 @@ namespace Schedule.Application.Public.DataAggregation;
 public interface IWebScrapper
 {
     Task<ICollection<GroupData>> GetMainPageData();
-    Task<ICollection<GroupData>> GetGroups(Group group);
+    Task<ICollection<GroupData>> GetGroups(GroupDisplayObject groupDisplayObject);
 }
 
 public class WebScrapper : IWebScrapper
@@ -21,12 +21,12 @@ public class WebScrapper : IWebScrapper
         return ExtractGroupsFromSource(response);
     }
 
-    public async Task<ICollection<GroupData>> GetGroups(Group group)
+    public async Task<ICollection<GroupData>> GetGroups(GroupDisplayObject groupDisplayObject)
     {
-        var response = await _requestHandler.GetPageContent(group.Uri.ToString());
+        var response = await _requestHandler.GetPageContent(groupDisplayObject.Uri.ToString());
         return ExtractGroupsFromSource(response, "/html/body/div[3]/div[1]/a");
     }
-    
+
     private static List<GroupData> ExtractGroupsFromSource(string content, string? xpath = null)
     {
         var document = new HtmlDocument();
@@ -41,7 +41,7 @@ public class WebScrapper : IWebScrapper
             var name = htmlNode.InnerHtml;
             groups.Add(new GroupData
             {
-                Name = name, Uri = new Uri(string.Concat(Links.MainPageUrl, url.Value.AsSpan(2, url.Value.Length-4)))
+                Name = name, Uri = new Uri(string.Concat(Links.MainPageUrl, url.Value.AsSpan(2, url.Value.Length - 4)))
             });
         }
 
