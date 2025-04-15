@@ -10,7 +10,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.2"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.2" PrivateAssets="all"/>
-        <PackageReference Include="MudBlazor" Version="8.5.1" />
+        <PackageReference Include="MudBlazor" Version="8.5.1"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -18,15 +18,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Schedule.Application\Schedule.Application.csproj" />
+        <ProjectReference Include="..\Schedule.Application\Schedule.Application.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\lib\" />
+        <Folder Include="wwwroot\lib\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
+        <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json"/>
     </ItemGroup>
 
 </Project>

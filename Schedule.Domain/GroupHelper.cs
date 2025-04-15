@@ -2,13 +2,13 @@ namespace Schedule.Domain;
 
 public static class GroupHelper
 {
-    public static List<Group> AsDisplayObject(this IEnumerable<GroupData> data)
+    public static List<GroupDisplayObject> AsDisplayObject(this IEnumerable<GroupData> data)
     {
-        return new List<Group>(data.Select(x => new Group
+        return new List<GroupDisplayObject>(data.Select(x => new GroupDisplayObject
         {
             Name = x.Name,
             Uri = x.Uri,
-            Expanded = false,
+            Expanded = false
         }));
     }
 }

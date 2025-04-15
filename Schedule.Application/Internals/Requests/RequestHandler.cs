@@ -19,25 +19,26 @@ internal class RequestHandler : IRequestHandler
     public RequestHandler()
     {
         ApiEndpoint[] enumList = Enum.GetValues<ApiEndpoint>();
-        
-        foreach (var apiEndpoint in enumList) 
+
+        foreach (var apiEndpoint in enumList)
             _apiUrls.TryAdd(apiEndpoint, Links.ApiHttpsUrl + apiEndpoint);
-        
+
         _apiUrls.ValidateEndpointsDictionary();
     }
 
     public async Task<string?> GetPageContent(string targetUrl)
     {
         using var httpClient = new HttpClient();
-        
+
         var finalUrl = UrlHelper(ApiEndpoint.GetPageContent, "url", targetUrl);
         var response = await httpClient.GetAsync(finalUrl);
-        
+
         response.EnsureSuccessStatusCode();
-        
+
         var content = await response.Content.ReadAsStringAsync();
         return content;
     }
+
     private Uri UrlHelper(ApiEndpoint endpoint, string parameterName, string parameterValue)
     {
         var builder = new UriBuilder(_apiUrls[endpoint]);
