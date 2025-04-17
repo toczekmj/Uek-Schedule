@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Schedule.Domain\Schedule.Domain.csproj" />
+        <ProjectReference Include="..\Schedule.Domain\Schedule.Domain.csproj"/>
     </ItemGroup>
 
 </Project>

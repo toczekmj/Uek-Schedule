@@ -1,7 +1,4 @@
-﻿using Schedule.Domain;
-using Schedule.Domain.DisplayObjects;
-using Schedule.Domain.DisplayObjects.Group;
-using Schedule.Domain.DisplayObjects.ScheduleData;
+﻿using Schedule.Domain.DisplayObjects.Group;
 using Shared.DTO;
 
 namespace Schedule.Application.DataAggregation;

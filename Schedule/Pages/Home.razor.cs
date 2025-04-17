@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Schedule.Application.DataAggregation;
-using Schedule.Domain;
-using Schedule.Domain.DisplayObjects;
 using Schedule.Domain.DisplayObjects.Group;
 
 namespace Schedule.Pages;
