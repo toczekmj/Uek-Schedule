@@ -12,12 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Schedule.Domain\Schedule.Domain.csproj"/>
-        <ProjectReference Include="..\Shared\Shared.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Public\"/>
+      <ProjectReference Include="..\Schedule.Domain\Schedule.Domain.csproj" />
     </ItemGroup>
 
 </Project>

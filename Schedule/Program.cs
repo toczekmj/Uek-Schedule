@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
 using Schedule;
-using Schedule.Application.Public.DataAggregation;
-using Schedule.Application.Public.Wrappers;
+using Schedule.Application.DataAggregation;
+using Schedule.Application.Requests;
+using Schedule.Application.Wrappers;
+using Shared.Urls;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -18,6 +20,18 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.NewestOnTop = true;
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
+
+switch (builder.HostEnvironment.BaseAddress)
+{
+    case ILinks.BlazorHttpsUrl:
+        builder.Services.AddTransient<IRequestHandler, SecureRequestHandler>();
+        break;
+    case ILinks.BlazorHttpUrl:
+        builder.Services.AddTransient<IRequestHandler, InsecureRequestHandler>();
+        break;
+    default:
+        throw new Exception("Invalid base URL");
+}
 
 builder.Services.AddSingleton<ISnackbar, SnackbarService>();
 builder.Services.AddSingleton<SnackbarWrappers>();

@@ -1,0 +1,25 @@
+﻿@using Schedule.Domain
+
+<MudItem xs="12" sm="6" md="4" lg="3" xl="3" xxl="2">
+    <MudPaper Elevation="3" Class="mud-width-full mud-height-full d-inline-flex" Height="200px">
+        <MudToggleIconButton Class="z-10 align-self-start ma-3 absolute" @bind-Toggled="IsFavorite"
+                             Icon="@Icons.Material.Filled.FavoriteBorder"
+                             ToggledIcon="@Icons.Material.Filled.Favorite"/>
+
+        <MudButton FullWidth="true" Class="z-0" OnClick="Expand">
+            <MudText Typo="Typo.h6">@Group.Name</MudText>
+        </MudButton>
+
+    </MudPaper>
+    <MudCollapse Expanded="Group.Expanded">
+        @if (Group.Children != null)
+        {
+            <MudList T="GroupData" Class="">
+                @foreach (var group in Group.Children)
+                {
+                    <MudListItem Text="@group.Name" OnClick="() => OpenGroupPage(group)"/>
+                }
+            </MudList>
+        }
+    </MudCollapse>
+</MudItem>

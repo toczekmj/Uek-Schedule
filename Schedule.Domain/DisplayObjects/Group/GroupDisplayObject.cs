@@ -1,4 +1,4 @@
-﻿namespace Schedule.Domain;
+﻿namespace Schedule.Domain.DisplayObjects.Group;
 
 public class GroupDisplayObject : GroupData
 {
