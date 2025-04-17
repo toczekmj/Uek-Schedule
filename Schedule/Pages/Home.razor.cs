@@ -11,7 +11,7 @@ public partial class Home : ComponentBase
 {
     private bool _dataLoaded;
 
-    private List<GroupDisplayObject> _groups = [];
+    private List<GroupDo> _groups = [];
     private string _searchTerm = string.Empty;
     [Inject] public IJSRuntime? JsRuntime { get; set; }
     [Inject] public IWebScrapper? WebScrapper { get; set; }
@@ -27,8 +27,8 @@ public partial class Home : ComponentBase
     {
         _dataLoaded = false;
         _searchTerm = string.Empty;
-        ICollection<GroupData> data = await WebScrapper!.GetMainPageData();
-        _groups = data.AsDisplayObject();
+        ICollection<GroupDo> data = await WebScrapper!.GetMainPageData();
+        _groups = data.ToList();
         _dataLoaded = true;
         StateHasChanged();
     }

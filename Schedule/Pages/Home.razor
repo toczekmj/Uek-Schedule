@@ -18,7 +18,7 @@
     }
     else
     {
-        ICollection<GroupDisplayObject> groups = GetGroups().ToList();
+        ICollection<GroupDo> groups = GetGroups().ToList();
 
         if (groups.Count == 0)
         {
@@ -41,15 +41,15 @@
 
 @code {
 
-    private IEnumerable<GroupDisplayObject> GetGroups()
+    private IEnumerable<GroupDo> GetGroups()
     {
-        IEnumerable<GroupDisplayObject> groups = _groups.Where(
+        IEnumerable<GroupDo> groups = _groups.Where(
             g =>
                 string.IsNullOrWhiteSpace(_searchTerm)
                 || g.Name.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase)
         );
 
-        return groups.OrderByDescending(g => g.Favourite).ThenBy(g => g.Name);
+        return groups.OrderByDescending(g => g.Favorite).ThenBy(g => g.Name);
     }
 
 }

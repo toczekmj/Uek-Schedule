@@ -8,8 +8,8 @@ namespace Schedule.Application.DataAggregation;
 
 public interface IWebScrapper
 {
-    Task<IList<GroupData>> GetMainPageData();
-    Task<IList<GroupData>> GetGroups(GroupDisplayObject groupDisplayObject);
-    Task<IEnumerable<ScheduleDateRangeDto>> GetDates(string url);
-    Task<ScheduleDataDto> GetDataInRange(string url);
+    Task<IList<GroupDo>> GetMainPageData();
+    Task<IList<GroupDo>> GetGroups(GroupDo groupDo);
+    Task<IEnumerable<DateRangeDto>> GetDates(string url);
+    Task<TimeTableDto> GetDataInRange(string url);
 }

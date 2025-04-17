@@ -1,6 +1,6 @@
 ﻿namespace Shared.DTO;
 
-public class ScheduleDateRangeDto
+public class DateRangeDto
 {
     public required DateOnly From { get; init; }  
     public required DateOnly To { get; init; }

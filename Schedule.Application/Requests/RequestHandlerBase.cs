@@ -13,6 +13,11 @@ public class RequestHandlerBase : IRequestHandler
     // and to avoid hardcoding strings throughout the code.
     private readonly Dictionary<ApiEndpoint, string> _apiUrls = new();
 
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     protected RequestHandlerBase(string apiUrl)
     {
         ApiEndpoint[] enumList = Enum.GetValues<ApiEndpoint>();
@@ -22,51 +27,39 @@ public class RequestHandlerBase : IRequestHandler
 
         _apiUrls.ValidateEndpointsDictionary();
     }
+
+    public async Task<string?> GetPageContent(string targetUrl) 
+        => await GetAsync<string>(ApiEndpoint.GetPageContent, ("url", targetUrl));
     
-    public async Task<string?> GetPageContent(string targetUrl)
+    public async Task<IEnumerable<DateRangeDto>?> GetSubjectDateRanges(string targetUrl)
+        => await GetAsync<IEnumerable<DateRangeDto>>(ApiEndpoint.GetSubjectDateRanges, ("url", targetUrl));
+
+    public async Task<TimeTableDto?> GetScheduleDataInRange(string targetUrl)
+        => await GetAsync<TimeTableDto>(ApiEndpoint.GetScheduleDataInRange, ("url", targetUrl));
+
+    private async Task<T?> GetAsync<T>(ApiEndpoint endpoint, params (string name, string value)[] args)
     {
         using var httpClient = new HttpClient();
 
-        var finalUrl = UrlHelper(ApiEndpoint.GetPageContent, "url", targetUrl);
+        var finalUrl = UrlHelper(endpoint, args);
         var response = await httpClient.GetAsync(finalUrl);
 
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadAsStringAsync();
-        return content;
+        return JsonSerializer.Deserialize<T?>(content, _jsonOptions);
     }
 
-    public async Task<IEnumerable<ScheduleDateRangeDto>?> GetSubjectDateRanges(string targetUrl)
-    {
-        using var httpClient = new HttpClient();
-
-        var finalUrl = UrlHelper(ApiEndpoint.GetSubjectDateRanges, "url", targetUrl);
-        var response = await httpClient.GetAsync(finalUrl);
-
-        response.EnsureSuccessStatusCode();
-
-        var content = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<IEnumerable<ScheduleDateRangeDto>>(content, new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
-    }
-    
-    public async Task<ScheduleDataDto?> GetScheduleDataInRange(string targetUrl)
-    {
-        using var httpClient = new HttpClient();
-
-        var finalUrl = UrlHelper(ApiEndpoint.GetScheduleDataInRange, "url", targetUrl);
-        var response = await httpClient.GetAsync(finalUrl);
-
-        response.EnsureSuccessStatusCode();
-
-        var content = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<ScheduleDataDto>(content, new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
-    }
-
-    private Uri UrlHelper(ApiEndpoint endpoint, string parameterName, string parameterValue)
+    private Uri UrlHelper(ApiEndpoint endpoint, params (string name, string value)[] args)
     {
         var builder = new UriBuilder(_apiUrls[endpoint]);
         var query = HttpUtility.ParseQueryString(string.Empty);
-        query.Add(parameterName, parameterValue);
+
+        foreach (var (n, v) in args)
+        {
+            query.Add(n, v);
+        }
+
         builder.Query = query.ToString();
         return builder.Uri;
     }

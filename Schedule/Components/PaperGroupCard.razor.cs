@@ -9,23 +9,23 @@ namespace Schedule.Components;
 
 public partial class PaperGroupCard : ComponentBase
 {
-    [Parameter] public required GroupDisplayObject Group { get; set; }
+    [Parameter] public required GroupDo Group { get; set; }
     [Inject] public required IJSRuntime JsRuntime { get; set; }
     [Inject] public required IWebScrapper WebScrapper { get; set; }
     [Parameter] public EventCallback<bool> OnFavoriteChange { get; set; }
 
     private bool IsFavorite
     {
-        get => Group.Favourite;
+        get => Group.Favorite;
         set
         {
-            Group.Favourite = value;
+            Group.Favorite = value;
             OnFavoriteChange.InvokeAsync(value);
             StateHasChanged();
         }
     }
 
-    private async Task OpenGroupPage(GroupData? group)
+    private async Task OpenGroupPage(GroupDo? group)
     {
         await JsRuntime.InvokeVoidAsync("openInNewTab", group?.Uri.ToString() ?? "https://google.com");
     }

@@ -51,7 +51,7 @@ public sealed class Get
     {
         var clientName = httpContext.GetHashCode().ToString();
         var httpClient = _httpClient.CreateClient(clientName);
-        List<ScheduleDateRangeDto> dateRangeDto = [];
+        List<DateRangeDto> dateRangeDto = [];
     
         try
         {
@@ -68,7 +68,7 @@ public sealed class Get
                     var stringParts = date.InnerHtml.Split(" ", StringSplitOptions.RemoveEmptyEntries);
                     var dateFrom = DateOnly.Parse(stringParts[0], CultureInfo.InvariantCulture);
                     var dateTo = DateOnly.Parse(stringParts[2], CultureInfo.InvariantCulture);
-                    var dateRange = new ScheduleDateRangeDto
+                    var dateRange = new DateRangeDto
                     {
                         Order = order,
                         From = dateFrom,
@@ -100,9 +100,9 @@ public sealed class Get
     {
         var clientName = httpContext.GetHashCode().ToString();
         var httpClient = _httpClient.CreateClient(clientName);
-        var dataDto = new ScheduleDataDto();
+        var timetable = new TimeTableDto();
         
-        // TODO: to jest do refactoru w chuj    
+        // TODO: to jest do refactoru w chuj
         try
         {
             if (httpContext.Request.Query.TryGetValue("url", out var url))
@@ -112,7 +112,6 @@ public sealed class Get
                 var document = new HtmlDocument();
                 document.LoadHtml(htmlContent);
 
-                var timetable = new TimeTable();
                 
                 var headers = document.DocumentNode.SelectNodes("/html/body/table/tr[1]/th");
                 timetable.Headers.AddRange(headers.Select(x => x.InnerHtml));
@@ -143,7 +142,6 @@ public sealed class Get
                     
                     timetable.Rows?.Add(row);
                 }
-                dataDto.TimeTable = timetable;
             }
             else
             {
@@ -161,75 +159,7 @@ public sealed class Get
             httpClient.Dispose();
         }
         
-        return Results.Ok(dataDto);
-    }
-
-    private async Task<IResult> GetScheduleDataInRange(string url, CancellationToken ct = default)
-    {
-        // var clientName = httpContext.GetHashCode().ToString();
-        var httpClient = _httpClient.CreateClient();
-        var dataDto = new ScheduleDataDto();
-        
-        // TODO: to jest do refactoru w chuj    
-        try
-        {
-            // if (httpContext.Request.Query.TryGetValue("url", out var url))
-            // {
-                var htmlContent = await httpClient.GetStringAsync(url, ct);
-                
-                var document = new HtmlDocument();
-                document.LoadHtml(htmlContent);
-
-                var timetable = new TimeTable();
-                
-                var headers = document.DocumentNode.SelectNodes("/html/body/table/tr[1]/th");
-                timetable.Headers.AddRange(headers.Select(x => x.InnerHtml));
-                
-                var rows = document.DocumentNode.SelectNodes("/html/body/table/tr[position() > 1]");
-                
-                // it can be null, although it should not
-                // if empty, no data is on the page - happen sometimes - ui will handle it
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-                if (rows is null || rows.Count == 0)
-                {
-                    _logger.LogError("No rows found in the HTML content.");
-                    return Results.Ok(timetable);
-                }
-                
-                timetable.Rows ??= [];
-                
-                foreach (var nodeRow in rows)
-                {
-                    var row = new Row();
-                    var valueNodes = nodeRow.SelectNodes("td");
-    
-                    for (var i = 0; i < valueNodes.Count; i++)
-                    {
-                        var currentValue = valueNodes[i].InnerHtml;    
-                        row.Cell.TryAdd(timetable.Headers[i], currentValue);
-                    }
-                    
-                    timetable.Rows?.Add(row);
-                }
-                dataDto.TimeTable = timetable;
-            // }
-            // else
-            // {
-                // _logger.LogError("URL not provided in the request.");
-                // return Results.BadRequest("URL not provided in the request.");
-            // }
-        }
-        catch (Exception e)
-        {
-            _logger.LogError($"Could not fetch the page content: {e.Message}");
-            return Results.InternalServerError();
-        }
-        finally
-        {
-            httpClient.Dispose();
-        }
-        
-        return Results.Ok(dataDto);
+        return Results.Ok(timetable);
     }
     
     
