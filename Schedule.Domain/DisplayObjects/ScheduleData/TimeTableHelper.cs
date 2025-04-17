@@ -9,7 +9,7 @@ public static class TimeTableHelper
         return new TimeTableDo
         {
             Headers = dto.Headers,
-            Rows = dto.Rows,
+            Rows = dto.Rows
         };
     }
 }

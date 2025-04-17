@@ -1,9 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Schedule.Application.Requests;
-using Schedule.Domain;
-using Schedule.Domain.DisplayObjects;
 using Schedule.Domain.DisplayObjects.Group;
-using Schedule.Domain.DisplayObjects.ScheduleData;
 using Shared.DTO;
 using Shared.Exceptions;
 using Shared.Urls;
@@ -18,7 +15,7 @@ public class WebScrapper : IWebScrapper
     {
         _requestHandler = requestHandler;
     }
-    
+
     public async Task<IList<GroupDo>> GetMainPageData()
     {
         var response = await _requestHandler.GetPageContent(ILinks.MainPageUrl);
@@ -36,7 +33,7 @@ public class WebScrapper : IWebScrapper
         IEnumerable<DateRangeDto>? response = await _requestHandler.GetSubjectDateRanges(url);
         return response ?? throw new CannotScrapeDataException();
     }
-    
+
     public async Task<TimeTableDto> GetDataInRange(string url)
     {
         var response = await _requestHandler.GetScheduleDataInRange(url);

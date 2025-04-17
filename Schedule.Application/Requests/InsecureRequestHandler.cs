@@ -4,5 +4,7 @@ namespace Schedule.Application.Requests;
 
 public sealed class InsecureRequestHandler : RequestHandlerBase
 {
-    public InsecureRequestHandler() : base(ILinks.ApiHttpUrl) { }
+    public InsecureRequestHandler() : base(ILinks.ApiHttpUrl)
+    {
+    }
 }

@@ -4,5 +4,4 @@ namespace Schedule.Domain.DisplayObjects.ScheduleData;
 
 public class TimeTableDo : TimeTableDto
 {
-    
 }
