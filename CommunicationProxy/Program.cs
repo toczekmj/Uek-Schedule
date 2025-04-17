@@ -12,19 +12,20 @@ using Shared.Urls;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-builder.Services.AddScoped<LoggerFactory>();
+builder.Services.AddHttpClient();
+builder.Services.AddLogging();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhostDebug", policy =>
     {
-        policy.WithOrigins(Links.BlazorHttpsUrl)
+        policy.WithOrigins(ILinks.BlazorHttpsUrl)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 
     options.AddPolicy("AllowLocalhostRun", policy =>
     {
-        policy.WithOrigins(Links.BlazorHttpUrl)
+        policy.WithOrigins(ILinks.BlazorHttpUrl)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -50,5 +51,8 @@ app.UseHttpsRedirection();
 
 // Mappings
 var loggerFactory = app.Services.GetService<ILoggerFactory>();
-Get.Initialize(app!, loggerFactory!).Configure();
+var httpClientFactory = app.Services.GetService<IHttpClientFactory>();
+
+Get.Initialize(app!, loggerFactory!, httpClientFactory!).Configure();
+
 app.Run();

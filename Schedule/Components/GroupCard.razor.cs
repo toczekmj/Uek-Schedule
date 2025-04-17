@@ -1,25 +1,27 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Schedule.Application.Public.DataAggregation;
+using Schedule.Application.DataAggregation;
 using Schedule.Domain;
+using Schedule.Domain.DisplayObjects;
+using Schedule.Domain.DisplayObjects.Group;
 
 namespace Schedule.Components;
 
 public partial class GroupCard : ComponentBase
 {
-    [Parameter] public GroupDisplayObject? Group { get; set; }
+    [Parameter] public GroupDo? Group { get; set; }
     [Parameter] public EventCallback<bool> OnFavoriteChange { get; set; }
     [Inject] public IJSRuntime? JsRuntime { get; set; }
     [Inject] public IWebScrapper? WebScrapper { get; set; }
 
     private bool IsFavorite
     {
-        get => Group?.Favourite ?? false;
+        get => Group?.Favorite ?? false;
         set
         {
             if (Group is null) return;
 
-            Group.Favourite = value;
+            Group.Favorite = value;
             OnFavoriteChange.InvokeAsync(value);
             StateHasChanged();
         }
@@ -32,16 +34,16 @@ public partial class GroupCard : ComponentBase
         Group.Expanded = !Group.Expanded;
     }
 
-    private void OpenGroupPage(GroupData groupData)
+    private void OpenGroupPage(GroupDo groupDo)
     {
-        JsRuntime?.InvokeVoidAsync("openInNewTab", groupData.Uri);
+        JsRuntime?.InvokeVoidAsync("openInNewTab", groupDo.Uri);
     }
 
-    private async Task FetchGroupData(GroupDisplayObject node)
+    private async Task FetchGroupData(GroupDo node)
     {
         if (node.Children is not null) return;
 
-        ICollection<GroupData> data = await WebScrapper!.GetGroups(node);
+        ICollection<GroupDo> data = await WebScrapper!.GetGroups(node);
         node.Children = data;
     }
 

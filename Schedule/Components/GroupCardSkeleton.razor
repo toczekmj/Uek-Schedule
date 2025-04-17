@@ -1,13 +1,12 @@
 ﻿<MudItem xs="12" sm="6" md="4" lg="3" xl="3" xxl="2">
-    <MudCard Outlined="true" Class="align-center justify-center mud-width-full py-8 ma-3">
-        <MudCardContent>
-            <MudSkeleton Animation="Animation.Wave" Width="180px" Height="32px"/>
-        </MudCardContent>
-        <MudCardActions>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Style="border-radius: 3px" Width="70px" Height="36px"
-                         Animation="Animation.Pulse"/>
-        </MudCardActions>
-        <MudCardContent>
-        </MudCardContent>
-    </MudCard>
+    <MudPaper Elevation="3" Height="200px" Class="d-flex flex-column gap-0">
+        <MudSkeleton Animation="Animation.Pulse" SkeletonType="SkeletonType.Circle" Height="42px" Width="42px"
+                     Class="ma-3"/>
+
+        <MudSkeleton Animation="Animation.Wave" SkeletonType="SkeletonType.Text" Width="75%" Height="3rem"
+                     Class="align-self-center"/>
+
+        <MudSkeleton Animation="Animation.Wave" SkeletonType="SkeletonType.Text" Width="50%" Height="3rem"
+                     Class="align-self-center"/>
+    </MudPaper>
 </MudItem>

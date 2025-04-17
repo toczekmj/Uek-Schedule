@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace Schedule.Application.Public.Wrappers;
+namespace Schedule.Application.Wrappers;
 
 public class SnackbarWrappers
 {

@@ -1,7 +1,9 @@
 ﻿@page "/"
-@using Schedule.Application.Public.Wrappers
+@using Schedule.Application.Wrappers
 @using Schedule.Components
 @using Schedule.Domain
+@using Schedule.Domain.DisplayObjects
+@using Schedule.Domain.DisplayObjects.Group
 @inject SnackbarWrappers SnackbarWrapper
 
 <SearchBar Icon="@Icons.Material.Filled.Search" Placeholder="Search..." AutoFocus="true" @bind-Value="_searchTerm"/>
@@ -16,7 +18,7 @@
     }
     else
     {
-        ICollection<GroupDisplayObject> groups = GetGroups().ToList();
+        ICollection<GroupDo> groups = GetGroups().ToList();
 
         if (groups.Count == 0)
         {
@@ -26,7 +28,7 @@
         {
             @foreach (var groupNode in groups)
             {
-                <GroupCard Group="groupNode" OnFavoriteChange="@StateHasChanged"/>
+                <PaperGroupCard Group="groupNode" OnFavoriteChange="@StateHasChanged"/>
             }
         }
     }
@@ -39,15 +41,15 @@
 
 @code {
 
-    private IEnumerable<GroupDisplayObject> GetGroups()
+    private IEnumerable<GroupDo> GetGroups()
     {
-        IEnumerable<GroupDisplayObject> groups = _groups.Where(
+        IEnumerable<GroupDo> groups = _groups.Where(
             g =>
                 string.IsNullOrWhiteSpace(_searchTerm)
                 || g.Name.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase)
         );
 
-        return groups.OrderByDescending(g => g.Favourite).ThenBy(g => g.Name);
+        return groups.OrderByDescending(g => g.Favorite).ThenBy(g => g.Name);
     }
 
 }

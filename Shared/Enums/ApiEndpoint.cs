@@ -6,5 +6,7 @@
 /// </summary>
 public enum ApiEndpoint
 {
-    GetPageContent
+    GetPageContent,
+    GetScheduleDataInRange,
+    GetSubjectDateRanges
 }
