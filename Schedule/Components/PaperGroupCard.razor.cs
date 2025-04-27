@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Schedule.Application.DataAggregation;
-using Schedule.Domain;
-using Schedule.Domain.DisplayObjects;
+using Schedule.Application.Wrappers;
 using Schedule.Domain.DisplayObjects.Group;
 
 namespace Schedule.Components;
@@ -12,6 +11,8 @@ public partial class PaperGroupCard : ComponentBase
     [Parameter] public required GroupDo Group { get; set; }
     [Inject] public required IJSRuntime JsRuntime { get; set; }
     [Inject] public required IWebScrapper WebScrapper { get; set; }
+
+    [Inject] public required SnackbarWrappers SnackbarWrapper { get; set; }
     [Parameter] public EventCallback<bool> OnFavoriteChange { get; set; }
 
     private bool IsFavorite
@@ -32,7 +33,7 @@ public partial class PaperGroupCard : ComponentBase
 
     private async Task Expand()
     {
-        Group.Children ??= await WebScrapper.GetGroups(Group);
+        Group.Children ??= await SnackbarWrapper.WrapOnErrorAsync(() => WebScrapper.GetGroups(Group));
         Group.Expanded = !Group.Expanded;
         StateHasChanged();
     }

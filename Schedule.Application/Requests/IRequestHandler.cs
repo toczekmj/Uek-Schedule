@@ -1,5 +1,4 @@
-﻿using Schedule.Domain.DisplayObjects.ScheduleData;
-using Shared.DTO;
+﻿using Shared.DTO;
 
 namespace Schedule.Application.Requests;
 

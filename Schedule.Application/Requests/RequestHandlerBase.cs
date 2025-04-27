@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 using System.Web;
-using Schedule.Domain.DisplayObjects.ScheduleData;
 using Shared;
 using Shared.DTO;
 using Shared.Enums;
@@ -28,14 +28,20 @@ public class RequestHandlerBase : IRequestHandler
         _apiUrls.ValidateEndpointsDictionary();
     }
 
-    public async Task<string?> GetPageContent(string targetUrl) 
-        => await GetAsync<string>(ApiEndpoint.GetPageContent, ("url", targetUrl));
-    
+    public async Task<string?> GetPageContent(string targetUrl)
+    {
+        return await GetAsync<string>(ApiEndpoint.GetPageContent, ("url", targetUrl));
+    }
+
     public async Task<IEnumerable<DateRangeDto>?> GetSubjectDateRanges(string targetUrl)
-        => await GetAsync<IEnumerable<DateRangeDto>>(ApiEndpoint.GetSubjectDateRanges, ("url", targetUrl));
+    {
+        return await GetAsync<IEnumerable<DateRangeDto>>(ApiEndpoint.GetSubjectDateRanges, ("url", targetUrl));
+    }
 
     public async Task<TimeTableDto?> GetScheduleDataInRange(string targetUrl)
-        => await GetAsync<TimeTableDto>(ApiEndpoint.GetScheduleDataInRange, ("url", targetUrl));
+    {
+        return await GetAsync<TimeTableDto>(ApiEndpoint.GetScheduleDataInRange, ("url", targetUrl));
+    }
 
     private async Task<T?> GetAsync<T>(ApiEndpoint endpoint, params (string name, string value)[] args)
     {
@@ -44,7 +50,8 @@ public class RequestHandlerBase : IRequestHandler
         var finalUrl = UrlHelper(endpoint, args);
         var response = await httpClient.GetAsync(finalUrl);
 
-        response.EnsureSuccessStatusCode();
+        if (response.StatusCode != HttpStatusCode.OK)
+            return default;
 
         var content = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<T?>(content, _jsonOptions);
@@ -55,10 +62,7 @@ public class RequestHandlerBase : IRequestHandler
         var builder = new UriBuilder(_apiUrls[endpoint]);
         var query = HttpUtility.ParseQueryString(string.Empty);
 
-        foreach (var (n, v) in args)
-        {
-            query.Add(n, v);
-        }
+        foreach (var (n, v) in args) query.Add(n, v);
 
         builder.Query = query.ToString();
         return builder.Uri;

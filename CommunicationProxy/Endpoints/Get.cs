@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Globalization;
-using System.Linq.Expressions;
+﻿using System.Globalization;
 using HtmlAgilityPack;
-using Microsoft.AspNetCore.Mvc;
 using Shared;
 using Shared.DTO;
 using Shared.Enums;
@@ -13,15 +10,15 @@ public sealed class Get
 {
     private readonly WebApplication _app;
     private readonly Dictionary<ApiEndpoint, Func<HttpContext, CancellationToken, Task<IResult>>> _endpoints = new();
-    private readonly ILogger _logger;
     private readonly IHttpClientFactory _httpClient;
-    
+    private readonly ILogger _logger;
+
     private async Task<IResult> GetPageContent(HttpContext httpContext, CancellationToken ct = default)
     {
         var clientName = httpContext.GetHashCode().ToString();
         var httpClient = _httpClient.CreateClient(clientName);
         string? htmlContent;
-        
+
         try
         {
             if (httpContext.Request.Query.TryGetValue("url", out var url))
@@ -43,7 +40,7 @@ public sealed class Get
         {
             httpClient.Dispose();
         }
-        
+
         return Results.Ok(htmlContent);
     }
 
@@ -52,16 +49,16 @@ public sealed class Get
         var clientName = httpContext.GetHashCode().ToString();
         var httpClient = _httpClient.CreateClient(clientName);
         List<DateRangeDto> dateRangeDto = [];
-    
+
         try
         {
             if (httpContext.Request.Query.TryGetValue("url", out var url))
             {
-                string htmlContent = await httpClient.GetStringAsync(url, ct);
+                var htmlContent = await httpClient.GetStringAsync(url, ct);
                 var document = new HtmlDocument();
                 document.LoadHtml(htmlContent);
                 var dates = document.DocumentNode.SelectNodes("/html/body/form/select/option");
-                
+
                 foreach (var date in dates)
                 {
                     var order = int.Parse(date.Attributes["value"].Value);
@@ -92,7 +89,7 @@ public sealed class Get
         {
             httpClient.Dispose();
         }
-        
+
         return Results.Ok(dateRangeDto);
     }
 
@@ -101,23 +98,23 @@ public sealed class Get
         var clientName = httpContext.GetHashCode().ToString();
         var httpClient = _httpClient.CreateClient(clientName);
         var timetable = new TimeTableDto();
-        
+
         // TODO: to jest do refactoru w chuj
         try
         {
             if (httpContext.Request.Query.TryGetValue("url", out var url))
             {
                 var htmlContent = await httpClient.GetStringAsync(url, ct);
-                
+
                 var document = new HtmlDocument();
                 document.LoadHtml(htmlContent);
 
-                
+
                 var headers = document.DocumentNode.SelectNodes("/html/body/table/tr[1]/th");
                 timetable.Headers.AddRange(headers.Select(x => x.InnerHtml));
-                
+
                 var rows = document.DocumentNode.SelectNodes("/html/body/table/tr[position() > 1]");
-                
+
                 // it can be null, although it should not
                 // if empty, no data is on the page - happen sometimes - ui will handle it
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
@@ -126,20 +123,20 @@ public sealed class Get
                     _logger.LogError("No rows found in the HTML content.");
                     return Results.Ok(timetable);
                 }
-                
+
                 timetable.Rows ??= [];
-                
+
                 foreach (var nodeRow in rows)
                 {
                     var row = new Row();
                     var valueNodes = nodeRow.SelectNodes("td");
-    
+
                     for (var i = 0; i < valueNodes.Count; i++)
                     {
-                        var currentValue = valueNodes[i].InnerHtml;    
+                        var currentValue = valueNodes[i].InnerHtml;
                         row.Cell.TryAdd(timetable.Headers[i], currentValue);
                     }
-                    
+
                     timetable.Rows?.Add(row);
                 }
             }
@@ -158,11 +155,11 @@ public sealed class Get
         {
             httpClient.Dispose();
         }
-        
+
         return Results.Ok(timetable);
     }
-    
-    
+
+
     #region init stuff
 
     private Get(WebApplication app, ILoggerFactory loggerFactory, IHttpClientFactory httpClient)
@@ -172,7 +169,8 @@ public sealed class Get
         _logger = loggerFactory.CreateLogger<Get>();
     }
 
-    public static Get Initialize(WebApplication application, ILoggerFactory loggerFactory, IHttpClientFactory httpClient)
+    public static Get Initialize(WebApplication application, ILoggerFactory loggerFactory,
+        IHttpClientFactory httpClient)
     {
         return new Get(application, loggerFactory, httpClient);
     }

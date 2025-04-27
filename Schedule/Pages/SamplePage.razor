@@ -1,6 +1,6 @@
 ﻿@page "/SamplePage"
 @using Schedule.Application.DataAggregation
-@using Schedule.Domain.DisplayObjects
+@using Schedule.Application.Wrappers
 @using Schedule.Domain.DisplayObjects.DateRange
 @using Schedule.Domain.DisplayObjects.ScheduleData
 @using Shared.DTO
@@ -18,7 +18,9 @@
                 <MudText Typo="Typo.h6">@dto.Order</MudText>
                 <MudText Typo="Typo.body1">@dto.From</MudText>
                 <MudText Typo="Typo.body1">@dto.To</MudText>
-                <MudButton OnClick="() => GetData(dto.Order)" Variant="Variant.Outlined" Color="Color.Tertiary">GetDatesInRange</MudButton>
+                <MudButton OnClick="() => GetData(dto.Order)" Variant="Variant.Outlined" Color="Color.Tertiary">
+                    GetDatesInRange
+                </MudButton>
                 @if (ScheduleDataDtos is not null)
                 {
                     <MudSimpleTable Hover="true" Dense="true" Bordered="true">
@@ -38,7 +40,7 @@
                             foreach (var row in ScheduleDataDtos.Rows)
                             {
                                 <MudTr>
-                                    @foreach (var cell in row.Cell)
+                                    @foreach (KeyValuePair<string, string> cell in row.Cell)
                                     {
                                         <MudTd>@cell.Value</MudTd>
                                     }
@@ -57,13 +59,13 @@
 
     private List<DateRangeDo>? DataDtos { get; set; }
     private TimeTableDo? ScheduleDataDtos { get; set; }
-    
-    private bool _isLoaded = false;
+    [Inject] public required SnackbarWrappers SnackbarWrapper { get; set; }
+
 
     private async Task GetDates()
     {
-        var result = await WebScrapper.GetDates("https://planzajec.uek.krakow.pl/index.php?typ=G&id=238471&okres=1");
-        DataDtos = result.AsDisplayObject();
+        IEnumerable<DateRangeDto>? result = await SnackbarWrapper.WrapOnErrorAsync(() => WebScrapper.GetDates("https://planzajec.uek.krakow.pl/index.php?typ=G&id=238471&okres=1"));
+        DataDtos = result?.AsDisplayObject();
     }
 
     private async Task GetData(int order)
@@ -75,7 +77,6 @@
 
     private void ExpandedChanged(bool arg)
     {
-        // obj.IsExpanded = arg;
         Console.WriteLine(arg);
         Console.WriteLine("ExpandedChanged");
     }
