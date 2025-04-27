@@ -41,10 +41,9 @@
 
     private IEnumerable<GroupDo> GetGroups()
     {
-        IEnumerable<GroupDo> groups = _groups.Where(
-            g =>
-                string.IsNullOrWhiteSpace(_searchTerm)
-                || g.Name.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase)
+        var groups = _groups.Where(g =>
+            string.IsNullOrWhiteSpace(_searchTerm)
+            || g.Name.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase)
         );
 
         return groups.OrderByDescending(g => g.Favorite).ThenBy(g => g.Name);

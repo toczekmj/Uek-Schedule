@@ -16,8 +16,8 @@ public static class EndpointValidation
             throw new EndpointNotInitializedException("The dictionary is empty. Please add endpoints before using it.");
 
         // Third check if the dictionary contains all the required endpoints
-        ApiEndpoint[] enumList = Enum.GetValues<ApiEndpoint>();
-        List<ApiEndpoint> missingEndpoints =
+        var enumList = Enum.GetValues<ApiEndpoint>();
+        var missingEndpoints =
             enumList.Where(apiEndpoint => !dictionary.ContainsKey(apiEndpoint)).ToList();
 
         if (missingEndpoints.Count > 0)

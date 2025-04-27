@@ -1,5 +1,5 @@
 using Proxy.Endpoints;
-using Shared.Urls;
+using Shared.Docker;
 
 // Proxy API to forward requests to the DataScrapper API
 // This API is used to avoid CORS issues when running the Blazor app locally
@@ -22,6 +22,12 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
+    if (DockerEnv.Active)
+        options.AddPolicy("DockerPolicy", policy =>
+        {
+            var origin = DockerEnv.AllowedOrigin;
+            policy.WithOrigins(origin);
+        });
 });
 
 
@@ -31,6 +37,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseCors("AllowAnyOrigin");
     app.MapOpenApi();
+}
+else
+{
+    if (DockerEnv.Active)
+        app.UseCors("DockerPolicy");
 }
 
 app.UseHttpsRedirection();

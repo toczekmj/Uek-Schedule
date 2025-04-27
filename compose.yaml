@@ -1,0 +1,27 @@
+﻿services:
+  schedule:
+    image: schedule
+    build:
+      context: .
+      dockerfile: Schedule/Dockerfile
+      args:
+        - DOTNET_VERSION=9.0
+    ports:
+      - "8082:80"
+    environment:
+      - PROXY_URL=localhost
+      - PROXY_PORT=8081
+  
+  proxy:
+    image: proxy
+    build:
+      context: .
+      dockerfile: Proxy/Dockerfile
+      args:
+        - DOTNET_VERSION=9.0
+    ports:
+      - "8081:8080"
+    environment:
+      - ALLOWED_CORS_ORIGIN=http://localhost:8082
+
+  
