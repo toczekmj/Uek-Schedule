@@ -4,7 +4,7 @@ using Shared;
 using Shared.DTO;
 using Shared.Enums;
 
-namespace CommunicationProxy.Endpoints;
+namespace Proxy.Endpoints;
 
 public sealed class Get
 {
@@ -18,7 +18,8 @@ public sealed class Get
         var clientName = httpContext.GetHashCode().ToString();
         var httpClient = _httpClient.CreateClient(clientName);
         string? htmlContent;
-
+        var s = Environment.GetEnvironmentVariable("ALLOWED_CORS_ORIGIN");
+        Console.WriteLine(s);
         try
         {
             if (httpContext.Request.Query.TryGetValue("url", out var url))
@@ -187,7 +188,7 @@ public sealed class Get
 
     private void MapEndpoints()
     {
-        foreach ((var key, Func<HttpContext, CancellationToken, Task<IResult>>? handler) in _endpoints)
+        foreach (var (key, handler) in _endpoints)
         {
             var url = key.ToString();
             _app.MapGet(url, handler).WithName(key.ToString());

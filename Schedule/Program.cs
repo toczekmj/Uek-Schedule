@@ -6,7 +6,8 @@ using Schedule;
 using Schedule.Application.DataAggregation;
 using Schedule.Application.Requests;
 using Schedule.Application.Wrappers;
-using Shared.Urls;
+using Shared.Docker;
+using Shared.Exceptions;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -20,20 +21,25 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
 
-switch (builder.HostEnvironment.BaseAddress)
+builder.Services.AddTransient<IRequestHandler, RequestHandler>(_ =>
 {
-    case ILinks.BlazorHttpsUrl:
-        builder.Services.AddTransient<IRequestHandler, SecureRequestHandler>();
-        break;
-    case ILinks.BlazorHttpUrl:
-        builder.Services.AddTransient<IRequestHandler, InsecureRequestHandler>();
-        break;
-    default:
-        throw new Exception("Invalid base URL");
-}
+    // TODO: fix this
+    // https://stackoverflow.com/questions/62784604/blazor-webassembly-cant-read-environment-variables-or-find-files-when-running-i
+    var config = builder.Services.BuildServiceProvider().GetRequiredService<IConfiguration>();
 
+    if (config["IsDevelopment"] is null || config["IsProduction"] != "true")
+        return new RequestHandler(DockerEnv.ProxyUrl);
+
+    var baseUrl = builder.HostEnvironment.BaseAddress;
+    if (baseUrl.Contains("https://"))
+        return new RequestHandler(config["HttpsProxy"] ?? throw new EmptyEnvironmentVariable("HttpsProxy"));
+
+    if (baseUrl.Contains("http://"))
+        return new RequestHandler(config["HttpProxy"] ?? throw new EmptyEnvironmentVariable("HttpProxy"));
+
+    throw new InvalidEnvironmentVariable("Cannot determine whether app is running over http or https.");
+});
 builder.Services.AddSingleton<ISnackbar, SnackbarService>();
 builder.Services.AddSingleton<SnackbarWrappers>();
 builder.Services.AddTransient<IWebScrapper, WebScrapper>();
-
 await builder.Build().RunAsync();

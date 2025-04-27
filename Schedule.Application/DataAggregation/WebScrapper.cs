@@ -18,7 +18,7 @@ public class WebScrapper : IWebScrapper
 
     public async Task<IList<GroupDo>> GetMainPageData()
     {
-        var response = await _requestHandler.GetPageContent(ILinks.MainPageUrl);
+        var response = await _requestHandler.GetPageContent(Links.MainPageUrl);
         return ExtractGroupsFromSource(response ?? throw new CannotScrapeDataException());
     }
 
@@ -30,7 +30,7 @@ public class WebScrapper : IWebScrapper
 
     public async Task<IEnumerable<DateRangeDto>> GetDates(string url)
     {
-        IEnumerable<DateRangeDto>? response = await _requestHandler.GetSubjectDateRanges(url);
+        var response = await _requestHandler.GetSubjectDateRanges(url);
         return response ?? throw new CannotScrapeDataException();
     }
 
@@ -54,7 +54,7 @@ public class WebScrapper : IWebScrapper
             var name = htmlNode.InnerHtml;
             groups.Add(new GroupDo
             {
-                Name = name, Uri = new Uri(string.Concat(ILinks.MainPageUrl, url.Value.AsSpan(2, url.Value.Length - 4)))
+                Name = name, Uri = new Uri(string.Concat(Links.MainPageUrl, url.Value.AsSpan(2, url.Value.Length - 4)))
             });
         }
 

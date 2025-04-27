@@ -7,7 +7,7 @@ using Shared.Enums;
 
 namespace Schedule.Application.Requests;
 
-public class RequestHandlerBase : IRequestHandler
+public class RequestHandler : IRequestHandler
 {
     // We use an ApiEndpoint enum to ensure that we have a consistent set of API endpoints
     // and to avoid hardcoding strings throughout the code.
@@ -18,9 +18,9 @@ public class RequestHandlerBase : IRequestHandler
         PropertyNameCaseInsensitive = true
     };
 
-    protected RequestHandlerBase(string apiUrl)
+    public RequestHandler(string apiUrl)
     {
-        ApiEndpoint[] enumList = Enum.GetValues<ApiEndpoint>();
+        var enumList = Enum.GetValues<ApiEndpoint>();
 
         foreach (var apiEndpoint in enumList)
             _apiUrls.TryAdd(apiEndpoint, apiUrl + apiEndpoint);

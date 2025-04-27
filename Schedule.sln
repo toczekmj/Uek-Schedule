@@ -2,13 +2,22 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schedule", "Schedule\Schedule.csproj", "{87348FF6-61AF-4CAA-9D78-AB0C84EEC784}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationProxy", "CommunicationProxy\CommunicationProxy.csproj", "{71DCCDA4-10C8-417F-9A95-9AA1DD04B35D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proxy", "Proxy\Proxy.csproj", "{71DCCDA4-10C8-417F-9A95-9AA1DD04B35D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{46C9EADA-B491-437D-82E9-D00F5865EFB4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schedule.Application", "Schedule.Application\Schedule.Application.csproj", "{646BD4DD-378E-4143-8430-0C659978F937}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schedule.Domain", "Schedule.Domain\Schedule.Domain.csproj", "{7BA21153-9692-4475-B7E1-E56C8465A6BA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{A1A297DF-244E-4480-A910-6B95A149D793}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blazor", "Blazor", "{BF17C62A-256A-4F91-B0D9-845630EA3A15}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{0B6EF08B-1D34-4744-BE7B-D7DC5480E950}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +45,11 @@ Global
 		{7BA21153-9692-4475-B7E1-E56C8465A6BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BA21153-9692-4475-B7E1-E56C8465A6BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BA21153-9692-4475-B7E1-E56C8465A6BA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{71DCCDA4-10C8-417F-9A95-9AA1DD04B35D} = {A1A297DF-244E-4480-A910-6B95A149D793}
+		{87348FF6-61AF-4CAA-9D78-AB0C84EEC784} = {BF17C62A-256A-4F91-B0D9-845630EA3A15}
+		{646BD4DD-378E-4143-8430-0C659978F937} = {BF17C62A-256A-4F91-B0D9-845630EA3A15}
+		{7BA21153-9692-4475-B7E1-E56C8465A6BA} = {BF17C62A-256A-4F91-B0D9-845630EA3A15}
 	EndGlobalSection
 EndGlobal
