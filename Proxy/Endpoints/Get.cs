@@ -4,7 +4,7 @@ using Shared;
 using Shared.DTO;
 using Shared.Enums;
 
-namespace CommunicationProxy.Endpoints;
+namespace Proxy.Endpoints;
 
 public sealed class Get
 {

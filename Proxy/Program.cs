@@ -1,4 +1,4 @@
-using CommunicationProxy.Endpoints;
+using Proxy.Endpoints;
 using Shared.Urls;
 
 // Proxy API to forward requests to the DataScrapper API
@@ -16,20 +16,6 @@ builder.Services.AddHttpClient();
 builder.Services.AddLogging();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhostDebug", policy =>
-    {
-        policy.WithOrigins(ILinks.BlazorHttpsUrl)
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-
-    options.AddPolicy("AllowLocalhostRun", policy =>
-    {
-        policy.WithOrigins(ILinks.BlazorHttpUrl)
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-
     options.AddPolicy("AllowAnyOrigin", policy =>
     {
         policy.AllowAnyOrigin()
