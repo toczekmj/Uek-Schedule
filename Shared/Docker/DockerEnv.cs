@@ -1,4 +1,5 @@
 using Shared.Exceptions;
+using Shared.Urls;
 
 namespace Shared.Docker;
 
@@ -25,6 +26,8 @@ public static class DockerEnv
     {
         get
         {
+            if (!Active) return Links.HttpProxy;
+            
             var proxyUrl = GetProxyUrl();
             if (proxyUrl.Contains("http://") || proxyUrl.Contains("https://")) return $"{proxyUrl}:{GetProxyPort()}";
 

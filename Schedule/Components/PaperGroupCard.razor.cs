@@ -11,7 +11,6 @@ public partial class PaperGroupCard : ComponentBase
     [Parameter] public required GroupDo Group { get; set; }
     [Inject] public required IJSRuntime JsRuntime { get; set; }
     [Inject] public required IWebScrapper WebScrapper { get; set; }
-
     [Inject] public required SnackbarWrappers SnackbarWrapper { get; set; }
     [Parameter] public EventCallback<bool> OnFavoriteChange { get; set; }
 
